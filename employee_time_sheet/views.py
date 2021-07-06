@@ -1,9 +1,9 @@
-from employee_time_sheet.models import TabelUchetaRabochegoVremeniT12
+from employee_time_sheet.models import Table
 from django.views.generic import DetailView, ListView
 
 
 class TablesUchetaRabochegoVremeniList(ListView):
-    model = TabelUchetaRabochegoVremeniT12
+    model = Table
     context_object_name = "tables"
     template_name = (
         "employee_time_sheet/tables_ucheta_rabochego_vremeni_list.html"
@@ -11,7 +11,7 @@ class TablesUchetaRabochegoVremeniList(ListView):
 
 
 class TablesUchetaRabochegoVremeniDetail(DetailView):
-    model = TabelUchetaRabochegoVremeniT12
+    model = Table
     context_object_name = "table"
     template_name = (
         "employee_time_sheet/table_ucheta_rabochego_vremeni_detail.html"
