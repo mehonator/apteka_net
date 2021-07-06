@@ -1,8 +1,8 @@
 from django.contrib import admin
 from employee_time_sheet.models import (
-    RowOfTabelUchetaRabochegoVremeni,
-    TabelUchetaRabochegoVremeniT12,
+    Row,
+    Table,
 )
 
-admin.site.register(RowOfTabelUchetaRabochegoVremeni)
-admin.site.register(TabelUchetaRabochegoVremeniT12)
+admin.site.register(Row)
+admin.site.register(Table)
