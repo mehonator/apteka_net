@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %} Таблицы учёта рабочего времени {% endblock %}
+{% load cache %}
+
+{% block content %}
+<div class="container">
+    <h1> Таблица </h1>
+    <ul>
+        {% for row in rows %}
+            <li>{{row.staff.get_full_name}}</li>
+        {% empty %}
+            <li>Таблица пустая!</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

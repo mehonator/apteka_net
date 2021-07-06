@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %} Перевозки {% endblock %}
+{% load cache %}
+
+{% block content %}
+<div class="container">
+    <h1> Перевозки </h1>
+    <ul>
+        {% for delevery in deleveries %}
+        <li>{{ delevery.from_unit.name }} -> {{ delevery.to_unit.name }}</li>
+        {% empty %}
+        <li>Доставок нет!</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

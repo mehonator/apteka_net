@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %} Перевозки {% endblock %}
+{% load cache %}
+
+{% block content %}
+<div class="container">
+    <h1> Перевозки </h1>
+    <ul>
+        {% for product in products %}
+        <li>{{ product.name}}</li>
+        {% empty %}
+        <li>Нет товаров!</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
