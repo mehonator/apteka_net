@@ -1,15 +1,38 @@
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-
+from autoslug import AutoSlugField
+from transliterate import translit, detect_language
 
 User = get_user_model()
+
+
+class GetSlugError(Exception):
+    pass
+
+
+def get_slug(instance) -> str:
+    text = instance.name
+    if detect_language(text) == "ru":
+        return translit(text, reversed=True)
+    elif text.isascii:
+        return text
+    else:
+        raise GetSlugError(
+            "Использован неккоректный алфавит для создания слага\n"
+            "Допустимы русский и английский алфавиты"
+        )
 
 
 class UnitOrganization(models.Model):
     name = models.CharField(
         max_length=512,
         verbose_name="Название подразделения",
+        unique=True,
+    )
+    slug = AutoSlugField(
+        populate_from=get_slug,
+        unique=True,
     )
 
     class Meta:
