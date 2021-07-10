@@ -5,13 +5,21 @@
 {% block content %}
 <div class="container">
     <h1> Таблица </h1>
-    <ul>
-        {% for row in rows %}
-            <li>{{row.staff.get_full_name}}</li>
-        {% empty %}
-            <li>Таблица пустая!</li>
-        {% endfor %}
-    </ul>
+        <table border="1">
+            {% for row in rows %}
+                <tr>
+                    <td>{{row.staff.get_full_name}}</td>
+                    {% for day in row.days.all %}
+                        <td>
+                            <table>
+                                <tr><td>{{day.day.day}}</td></tr>
+                                <tr><td>{{day.status}}</td></tr>    
+                            </table>
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
 </div>
 
 {% endblock %}
