@@ -3,23 +3,61 @@
 {% load cache %}
 
 {% block content %}
+<style type="text/css">
+#table-wrapper {
+  position:relative;
+}
+#table-scroll {
+  overflow:auto;  
+}
+#table-wrapper table {
+  width:100%;
+
+}
+#table-wrapper table * {
+  color:black;
+}
+#table-wrapper table thead th .text {
+  position:absolute;   
+  top:-20px;
+  z-index:2;
+  height:20px;
+  width:35%;
+  border:1px solid red;
+}
+</style>
+
+
 <div class="container">
-    <h1> Таблица </h1>
-        <table border="1">
-            {% for row in rows %}
-                <tr>
-                    <td>{{row.staff.get_full_name}}</td>
-                    {% for day in row.days.all %}
-                        <td>
-                            <table>
-                                <tr><td>{{day.day.day}}</td></tr>
-                                <tr><td>{{day.status}}</td></tr>    
-                            </table>
-                        </td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        </table>
+    <div id="table-wrapper">
+        <div id="table-scroll">
+        <h1> Таблица </h1>
+            <table id="dtHorizontalExample" class="table table-striped table-bordered table-sm" cellspacing="0"
+            width="100%">
+                <thead>
+                    <tr>
+                        <td>Сотрудники</td>
+                        <td>Дни</td>
+                    </tr>
+                </thead>
+                {% for row in rows %}
+                    <tr>
+                        <td>{{row.staff.get_full_name}}</td>
+                        {% for day in row.days.all %}
+                            <td>
+                                <table>
+                                    <tr><td>{{day.day.day}}</td></tr>
+                                    <tr><td><small>{{day.get_status_display}}</small></td></tr>    
+                                </table>
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 </div>
+
+
 
 {% endblock %}
