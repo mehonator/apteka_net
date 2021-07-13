@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %} Таблицы учёта рабочего времени {% endblock %}
+{% load cache %}
+
+{% block content %}
+<div class="container">
+    <h1> Таблицы учёта рабочего времени </h1>
+    <ul>
+        {% for unit in units_organizations %}
+        <li><a href={% url "employee_time_sheet:tables_list" unit_organization=unit.slug%}>{{unit.name}}</a></li>
+        {% empty %}
+        <li>Нет организаций для которых ведётся учёт рабочего времени</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
