@@ -1,22 +1,35 @@
 from django.urls import path
 from employee_time_sheet.views import (
-    TablesUchetaRabochegoVremeniDetail,
-    TablesUchetaRabochegoVremeniList,
+    TableDetail,
+    TablesList,
     table_ucheta_rabochego_vremeni_create,
+    table_ucheta_rabochego_vremeni_detail_formset,
+    index,
 )
 
 app_name = "employee_time_sheet"
 urlpatterns = [
     path(
-        "<slug:unit_organization>/tables_ucheta_rabochego_vremeni_list/",
-        TablesUchetaRabochegoVremeniList.as_view(),
-        name="tables_ucheta_rabochego_vremeni_list",
+        "",
+        index,
+        name="index",
     ),
     path(
-        "tables_ucheta_rabochego_vremeni_detail/<int:pk>/",
-        TablesUchetaRabochegoVremeniDetail.as_view(),
-        name="tables_ucheta_rabochego_vremeni_detail",
+        "<slug:unit_organization>/",
+        TablesList.as_view(),
+        name="tables_list",
     ),
+    path(
+        "detail/<int:pk>/",
+        TableDetail.as_view(),
+        name="detail",
+    ),
+    path(
+        "tables_ucheta_rabochego_vremeni_detail_formset/<int:pk>/",
+        table_ucheta_rabochego_vremeni_detail_formset,
+        name="tables_ucheta_rabochego_vremeni_detail_formset",
+    ),
+
     path(
         "<slug:unit_organization>/tables_ucheta_rabochego_vremeni_create/",
         table_ucheta_rabochego_vremeni_create,
