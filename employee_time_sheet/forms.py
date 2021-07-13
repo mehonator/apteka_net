@@ -9,7 +9,13 @@ class TabbleForm(forms.ModelForm):
         fields = ("unit_organization",)
 
 
-class RowFoms(forms.ModelForm):
+class RowForm(forms.ModelForm):
     class Meta:
         model = Row
         fields = ("staff",)
+
+
+class DayForm(forms.ModelForm):
+    class Meta:
+        model = Day
+        fields = ("day", "status")
