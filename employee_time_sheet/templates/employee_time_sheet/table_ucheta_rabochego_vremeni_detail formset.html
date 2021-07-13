@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %} Таблицы учёта рабочего времени {% endblock %}
+{% load cache %}
+
+{% block content %}
+<style type="text/css">
+  #table-wrapper {
+    position: relative;
+  }
+
+  #table-scroll {
+    overflow: auto;
+  }
+
+  #table-wrapper table {
+    width: 100%;
+
+  }
+
+  #table-wrapper table * {
+    color: black;
+  }
+
+  #table-wrapper table thead th .text {
+    position: absolute;
+    top: -20px;
+    z-index: 2;
+    height: 20px;
+    width: 35%;
+    border: 1px solid red;
+  }
+</style>
+
+
+<div class="container">
+  <div id="table-wrapper">
+    <div id="table-scroll">
+      <h1> Таблица </h1>
+      <table border="1">
+        {% for row in rows_names_and_days_formsets %}
+          <tr>
+          <td>{{row.name}}</td>
+          {% for form in row.days_formset %}
+            <td>
+              {{form.as_p}}
+            </td>
+          {% endfor %}
+          {% empty %}
+            <p>Пусто!</p>
+          </tr>
+        {% endfor %}
+      </table>
+
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}
