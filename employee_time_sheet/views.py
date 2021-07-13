@@ -1,4 +1,5 @@
-from django.db.models import query
+from typing import List, Dict
+from django.forms.formsets import BaseFormSet
 from django.forms.models import inlineformset_factory, modelformset_factory
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import DetailView, ListView
@@ -35,13 +36,6 @@ class TableDetail(DetailView):
         return context
 
 
-FullTable = inlineformset_factory(
-    Table,
-    Row,
-    fields=("staff",),
-)
-
-
 def index(request):
     if request.method == "GET":
         units_organizations = UnitOrganization.objects.all()
@@ -50,6 +44,13 @@ def index(request):
             "employee_time_sheet/index.html",
             context={"units_organizations": units_organizations},
         )
+
+
+FullTable = inlineformset_factory(
+    Table,
+    Row,
+    fields=("staff",),
+)
 
 
 def table_ucheta_rabochego_vremeni_create(request):
@@ -83,28 +84,27 @@ DayFormset = modelformset_factory(
 )
 
 
-def table_ucheta_rabochego_vremeni_detail_formset(request, pk: int):
+def detail_formset(request, pk: int):
     if request.method == "POST":
         pass
 
     else:
-        table = Table.objects.get(pk=pk)
+        table = get_object_or_404(Table, pk=pk)
         rows = table.rows.all()
-        rows_days_formset = []
+        rows_names_and_days_formsets: List[Dict[str, BaseFormSet]] = []
         for row in rows:
-            row: Day
-            days = row.days.all()
-            formset = DayFormset(queryset=days)
-            for form in formset:
-                print(form.as_table())
-            rows_days_formset.append(formset)
-    formset2 = DayFormset()
+            days = Day.objects.filter(row=row)
+            days_formset = DayFormset(queryset=days)
+            names_days_formset = {
+                "name": row.staff.get_full_name(),
+                "days_formset": days_formset,
+            }
+            rows_names_and_days_formsets.append(names_days_formset)
 
     context = {
         "table": table,
         "rows": rows,
-        "rows_days_formset": rows_days_formset,
-        "formset2": formset2,
+        "rows_names_and_days_formsets": rows_names_and_days_formsets,
     }
 
     return render(
