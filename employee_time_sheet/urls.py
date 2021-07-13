@@ -3,7 +3,7 @@ from employee_time_sheet.views import (
     TableDetail,
     TablesList,
     table_ucheta_rabochego_vremeni_create,
-    table_ucheta_rabochego_vremeni_detail_formset,
+    detail_formset,
     index,
 )
 
@@ -25,9 +25,9 @@ urlpatterns = [
         name="detail",
     ),
     path(
-        "tables_ucheta_rabochego_vremeni_detail_formset/<int:pk>/",
-        table_ucheta_rabochego_vremeni_detail_formset,
-        name="tables_ucheta_rabochego_vremeni_detail_formset",
+        "detail_formset/<int:pk>/",
+        detail_formset,
+        name="detail_formset",
     ),
 
     path(
