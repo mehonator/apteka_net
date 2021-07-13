@@ -68,9 +68,9 @@ class Row(models.Model):
 
 
 class Status(models.TextChoices):
-    CAME_TO_WORK = "came_to_work", _("Came_to_work")
-    NO_CAME_TO_WORK = "no_came_to_work", _("no_came_to_work")
-    NOT_INFO = "not_info", _("not_info")
+    CAME_TO_WORK = "came_to_work", _("Явился")
+    NO_CAME_TO_WORK = "no_came_to_work", _("Не явился")
+    NOT_INFO = "not_info", _("Нет информации")
 
 
 class Day(models.Model):
@@ -82,6 +82,9 @@ class Day(models.Model):
         blank=True,
         null=True,
     )
+
+    def get_rus_status(self):
+        return self.status[1]
 
 
 def create_days(instance, created, raw, **kwargs):
