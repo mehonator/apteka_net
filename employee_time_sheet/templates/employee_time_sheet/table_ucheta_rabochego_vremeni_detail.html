@@ -28,7 +28,7 @@
 </style>
 
 
-<div class="container">
+<div >
     <div id="table-wrapper">
         <div id="table-scroll">
         <h1> Таблица </h1>
@@ -56,6 +56,8 @@
             </table>
         </div>
     </div>
+    <a class="nav-link" href={% url "employee_time_sheet:detail_formset" pk=table.pk%}>Редактировать<span
+                        class="sr-only">(current)</span></a>
 </div>
 
 
