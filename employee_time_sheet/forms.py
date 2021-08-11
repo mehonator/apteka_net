@@ -18,4 +18,14 @@ class RowForm(forms.ModelForm):
 class DayForm(forms.ModelForm):
     class Meta:
         model = Day
-        fields = ("day", "status")
+        fields = ("status",)
+
+
+class ChooseStaffForm(forms.Form):
+    full_name = forms.CharField(
+        label="ФИО",
+        max_length=512,
+        widget=forms.TextInput(attrs={"readonly": "readonly", "size": "50"}),
+    )
+    choosen = forms.BooleanField(initial=True, label="Выбран")
+    pk_staff = forms.IntegerField(widget=forms.HiddenInput(), required=True)
