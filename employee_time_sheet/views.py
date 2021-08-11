@@ -212,7 +212,7 @@ def detail_formset(request, pk: int):
         days = prepare_update_days_from_parse_form(days_ids_statuses)
         Day.objects.bulk_update(days, ["status"])
         return HttpResponseRedirect(
-            reverse("employee_time_sheet:detail_formset", kwargs={"pk": pk})
+            reverse("employee_time_sheet:detail", kwargs={"pk": pk})
         )
     else:
         table = get_object_or_404(Table, pk=pk)
