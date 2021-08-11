@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} Таблицы учёта рабочего времени {% endblock %}
+{% block title %}Редактирование таблицы учёта рабочего времени{% endblock %}
 {% load cache %}
 
 {% block content %}
@@ -35,22 +35,29 @@
 <div class="container">
   <div id="table-wrapper">
     <div id="table-scroll">
-      <h1> Таблица </h1>
-      <table border="1">
-        {% for row in rows_names_and_days_formsets %}
+      <h1> Редактирование таблицы </h1>
+      <form name="table-time-sheet" method="post"> 
+        {% csrf_token %}
+        <table border="1">
+          {% for row in rows_names_and_days_formsets %}
           <tr>
-          <td>{{row.name}}</td>
-          {% for form in row.days_formset %}
+            <td>{{row.name}}</td>
+            {% for form in row.days_formset %}
             <td>
+              {{forloop.counter}}
               {{form.as_p}}
             </td>
-          {% endfor %}
-          {% empty %}
+            {% endfor %}
+            {% empty %}
             <p>Пусто!</p>
           </tr>
-        {% endfor %}
-      </table>
+          {% endfor %}
 
+        </table>
+        {% if rows_names_and_days_formsets %}
+        <input type="submit" value="Отправить">
+        {% endif%}
+      </form>
     </div>
   </div>
 </div>
