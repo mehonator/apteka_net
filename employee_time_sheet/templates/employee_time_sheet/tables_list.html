@@ -11,6 +11,7 @@
         {% empty %}
         <li>Таблиц нет!</li>
         {% endfor %}
+        <li><a href={% url  "employee_time_sheet:table_add_in_unit" unit_organization=unit_organization.slug%}>Добавить таблицу</a></li>
     </ul>
 </div>
 
