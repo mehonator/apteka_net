@@ -143,7 +143,8 @@ class TableDetail(DetailView):
 
 def index(request):
     if request.method == "GET":
-        units_organizations = UnitOrganization.objects.all()
+        profile = request.user.profile
+        units_organizations = profile.units_organizations.all()
         return render(
             request,
             "employee_time_sheet/index.html",
