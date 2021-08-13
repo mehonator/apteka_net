@@ -1,6 +1,7 @@
 from django.urls import path
 from employee_time_sheet.views import (
     TableDetail,
+    choose_staff,
     table_ucheta_rabochego_vremeni_create,
     detail_formset,
     index,
@@ -29,6 +30,11 @@ urlpatterns = [
         "detail/<int:pk>/",
         TableDetail.as_view(),
         name="detail",
+    ),
+    path(
+        "detail/<int:pk>/choose_staff",
+        choose_staff,
+        name="choose_staff",
     ),
     path(
         "detail_formset/<int:pk>/",
