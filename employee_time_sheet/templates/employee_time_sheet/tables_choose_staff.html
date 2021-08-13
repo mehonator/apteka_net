@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %} Создание таблицы учёта рабочего времени {% endblock %}
+{% load cache %}
+
+{% block content %}
+<div class="container">
+    <h1> Таблица </h1>
+    <p>Выведен список сотрудников, которые приписанны к данному подразделению.</p>
+    <p>Если необходимый вам сотридник отсутвует, добавте его в данное подразделение.</p>
+    {% if choose_staff_formset %}
+        <form name="choose-staff" method="post">
+            {% csrf_token %}
+            {{ choose_staff_formset.management_form }}
+            {% for staff_form in choose_staff_formset %}
+                {{ staff_form.as_table }}
+                <br>
+            {% endfor %}
+            <input type="submit" value="Отправить">
+        </form>
+    {% endif %}
+</div>
+
+{% endblock %}
