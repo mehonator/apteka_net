@@ -29,6 +29,9 @@ class Table(models.Model):
         null=True,
     )
 
+    def __str__(self):
+        return f"{self.unit_organization.name} {self.year} {self.month}"
+
     class Meta:
         unique_together = ["unit_organization", "year", "month"]
         verbose_name = "Таблица учёта рабочего времени"
@@ -61,6 +64,9 @@ class Row(models.Model):
         related_name="rows",
     )
 
+    def __str__(self):
+        return f"{self.table} {self.staff.get_full_name()}"
+
     class Meta:
         unique_together = ["staff", "table"]
         verbose_name = "Строка таблицы учёта рабочего времени"
@@ -85,6 +91,9 @@ class Day(models.Model):
 
     def get_rus_status(self):
         return self.status[1]
+
+    def __str__(self):
+        return f"{self.day} {self.status} {self.row}"
 
 
 def create_days(instance, created, raw, **kwargs):
