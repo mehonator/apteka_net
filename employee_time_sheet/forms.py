@@ -27,5 +27,7 @@ class ChooseStaffForm(forms.Form):
         max_length=512,
         widget=forms.TextInput(attrs={"readonly": "readonly", "size": "50"}),
     )
-    choosen = forms.BooleanField(initial=True, label="Выбран")
+    is_choosen = forms.BooleanField(
+        initial=True, label="Выбран", required=False
+    )
     pk_staff = forms.IntegerField(widget=forms.HiddenInput(), required=True)
