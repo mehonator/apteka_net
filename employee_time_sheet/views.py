@@ -141,15 +141,15 @@ class TableDetail(DetailView):
         return context
 
 
-def index(request):
-    if request.method == "GET":
-        profile = request.user.profile
-        units_organizations = profile.units_organizations.all()
-        return render(
-            request,
-            "employee_time_sheet/index.html",
-            context={"units_organizations": units_organizations},
-        )
+class IndexListView(ListView):
+    model = UnitOrganization
+    template_name = "employee_time_sheet/index.html"
+
+    def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return []
+        profile = self.request.user.profile
+        return profile.units_organizations.all()
 
 
 def table_ucheta_rabochego_vremeni_create(request):

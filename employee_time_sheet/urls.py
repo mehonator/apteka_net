@@ -1,10 +1,10 @@
 from django.urls import path
 from employee_time_sheet.views import (
     TableDetail,
+    IndexListView,
     choose_staff,
     table_ucheta_rabochego_vremeni_create,
     detail_formset,
-    index,
     tables_add_in_unit,
     tables_list,
 )
@@ -13,7 +13,7 @@ app_name = "employee_time_sheet"
 urlpatterns = [
     path(
         "",
-        index,
+        IndexListView.as_view(),
         name="index",
     ),
     path(
@@ -41,7 +41,6 @@ urlpatterns = [
         detail_formset,
         name="detail_formset",
     ),
-
     path(
         "<slug:unit_organization>/tables_ucheta_rabochego_vremeni_create/",
         table_ucheta_rabochego_vremeni_create,
