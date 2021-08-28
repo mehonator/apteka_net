@@ -3,10 +3,10 @@ from employee_time_sheet.views import (
     TableDetail,
     IndexListView,
     TablesList,
+    TableCreateView,
     choose_staff,
     table_ucheta_rabochego_vremeni_create,
     detail_formset,
-    tables_add_in_unit,
 )
 
 app_name = "employee_time_sheet"
@@ -23,8 +23,8 @@ urlpatterns = [
     ),
     path(
         "<slug:unit_organization>/add/",
-        tables_add_in_unit,
-        name="table_add_in_unit",
+        TableCreateView.as_view(),
+        name="table_create",
     ),
     path(
         "detail/<int:pk>/",

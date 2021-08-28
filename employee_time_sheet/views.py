@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views.generic import DetailView, ListView
 from django.urls import reverse
 from django.http import HttpResponseBadRequest
+from django.views.generic.base import View
 
 from employee_time_sheet.forms import (
     RowForm,
@@ -77,16 +78,17 @@ def get_init_data_choose_staf(staff, is_choosen: bool) -> List[Dict]:
     return staff_init
 
 
-def tables_add_in_unit(request, unit_organization):
+class TableCreateView(View):
     ChooseStaffFormset = formset_factory(ChooseStaffForm, extra=0)
-    if request.method == "GET":
+
+    def get(self, request, *args, **kwargs):
         unit_organization = get_object_or_404(
-            UnitOrganization, slug=unit_organization
+            UnitOrganization, slug=self.kwargs["unit_organization"]
         )
         staff_profile = unit_organization.profiles_staff.all()
         staff = User.objects.filter(profile__in=staff_profile)
         staff_init = get_init_data_choose_staf(staff, is_choosen=True)
-        choose_staff_formset = ChooseStaffFormset(initial=staff_init)
+        choose_staff_formset = self.ChooseStaffFormset(initial=staff_init)
         context = {
             "unit_organization": unit_organization,
             "staff": staff,
@@ -98,7 +100,7 @@ def tables_add_in_unit(request, unit_organization):
             context,
         )
 
-    elif request.method == "POST":
+    def post(self, request, *args, **kwargs):
         parsed_staff = parse_choose_staff(request.POST)
         if not validate_staff_form(parsed_staff):
             return HttpResponseBadRequest(
@@ -107,7 +109,7 @@ def tables_add_in_unit(request, unit_organization):
             )
 
         unit_organization = get_object_or_404(
-            UnitOrganization, slug=unit_organization
+            UnitOrganization, slug=self.kwargs["unit_organization"]
         )
         table = Table.objects.create(unit_organization=unit_organization)
         for one_of_staff in parsed_staff.values():
