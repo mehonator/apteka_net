@@ -193,8 +193,7 @@ class TableEditView(View):
 
         return render(
             request,
-            "employee_time_sheet/"
-            "table_ucheta_rabochego_vremeni_detail formset.html",
+            "employee_time_sheet/table_edit.html",
             context=context,
         )
 

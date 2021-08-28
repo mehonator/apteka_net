@@ -36,8 +36,8 @@ urlpatterns = [
         name="choose_staff",
     ),
     path(
-        "detail_formset/<int:pk>/",
+        "table_edit/<int:pk>/",
         TableEditView.as_view(),
-        name="detail_formset",
+        name="table_edit",
     ),
 ]
