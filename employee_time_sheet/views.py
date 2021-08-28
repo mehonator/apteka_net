@@ -31,26 +31,15 @@ class TablesList(ListView):
         unit_organization = get_object_or_404(
             UnitOrganization, slug=self.kwargs.get("unit_organization")
         )
-        result = unit_organization.tabel_ucheta_rabochego_vremeni_t12.all()
+        return unit_organization.tabel_ucheta_rabochego_vremeni_t12.all()
 
-        return result
-
-
-def tables_list(request, unit_organization):
-    if request.method == "GET":
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         unit_organization = get_object_or_404(
-            UnitOrganization, slug=unit_organization
+            UnitOrganization, slug=self.kwargs["unit_organization"]
         )
-        tables = unit_organization.tabel_ucheta_rabochego_vremeni_t12.all()
-        context = {
-            "tables": tables,
-            "unit_organization": unit_organization,
-        }
-        return render(
-            request,
-            "employee_time_sheet/tables_list.html",
-            context,
-        )
+        context["unit_organization"] = unit_organization
+        return context
 
 
 def parse_choose_staff(post_data) -> Dict[str, Dict[str, str]]:

@@ -2,11 +2,11 @@ from django.urls import path
 from employee_time_sheet.views import (
     TableDetail,
     IndexListView,
+    TablesList,
     choose_staff,
     table_ucheta_rabochego_vremeni_create,
     detail_formset,
     tables_add_in_unit,
-    tables_list,
 )
 
 app_name = "employee_time_sheet"
@@ -18,7 +18,7 @@ urlpatterns = [
     ),
     path(
         "<slug:unit_organization>/",
-        tables_list,
+        TablesList.as_view(),
         name="tables_list",
     ),
     path(

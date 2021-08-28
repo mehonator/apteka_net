@@ -1,17 +1,19 @@
 {% extends "base_with_container.html" %}
-{% block title %} Таблицы учёта рабочего времени {% endblock %}
+{% block title %} Табель рабочего времени {% endblock %}
 {% load cache %}
 
 {% block content %}
 <div class="container">
-    <h1> Таблица </h1>
+    <h1> Табели </h1>
     <ul>
         {% for table in tables %}
-        <li><a href={% url "employee_time_sheet:detail" pk=table.pk%}>{{table.unit_organization.name}} {{table.month}}.{{table.year}}</a></li>
+        <li><a href={% url "employee_time_sheet:detail" pk=table.pk%}>{{table.unit_organization.name}}
+                {{table.month}}.{{table.year}}</a></li>
         {% empty %}
-        <li>Таблиц нет!</li>
+        <li>Таблелей нет!</li>
         {% endfor %}
-        <li><a href={% url  "employee_time_sheet:table_add_in_unit" unit_organization=unit_organization.slug%}>Добавить таблицу</a></li>
+        <li><a href={% url  "employee_time_sheet:table_add_in_unit" unit_organization=unit_organization.slug%}>Добавить
+                таблицу</a></li>
     </ul>
 </div>
 
