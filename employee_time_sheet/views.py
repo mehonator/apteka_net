@@ -117,7 +117,7 @@ class TableCreateView(View):
         return HttpResponseRedirect(reverse("employee_time_sheet:index"))
 
 
-class TableDetail(DetailView):
+class TableDetailView(DetailView):
     model = Table
     context_object_name = "table"
     template_name = (

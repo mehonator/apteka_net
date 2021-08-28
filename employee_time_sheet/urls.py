@@ -1,6 +1,6 @@
 from django.urls import path
 from employee_time_sheet.views import (
-    TableDetail,
+    TableDetailView,
     IndexListView,
     TablesList,
     TableCreateView,
@@ -27,7 +27,7 @@ urlpatterns = [
     ),
     path(
         "detail/<int:pk>/",
-        TableDetail.as_view(),
+        TableDetailView.as_view(),
         name="detail",
     ),
     path(
