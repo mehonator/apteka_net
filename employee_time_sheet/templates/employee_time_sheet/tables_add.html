@@ -8,17 +8,18 @@
     <h3>Выбор сотрудников</h3>
     <p>Выберите сотрудников, чтобы добавить их в табель учёта рабочего времени</p>
     <p>По умолчанию выбраны все сотрудники данного подразделения</p>
-    
-        <form action="{{request.get_full_path}}" method="post">
-            {% csrf_token %}
-            <ul>
-                {% for form in choose_staff_formset %}
-                <li>{{form.as_table}}</li>
-                {% endfor %}
-            </ul>
+
+    <form action="{{request.get_full_path}}" method="post">
+        {% csrf_token %}
+        <ul>
+            {{ month_year_form.as_table }}
+            {% for form in choose_staff_formset %}
+            <li>{{form.as_table}}</li>
+            {% endfor %}
+        </ul>
         <input type="submit" value="Отправить">
-        </form>
-    
+    </form>
+
 </div>
 
 {% endblock %}

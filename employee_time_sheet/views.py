@@ -1,3 +1,4 @@
+import datetime
 from typing import List, Dict, Tuple
 from django.contrib.auth import get_user_model
 from django.forms.formsets import BaseFormSet
@@ -11,6 +12,7 @@ from django.http import HttpResponseBadRequest
 from django.views.generic.base import View
 
 from employee_time_sheet.forms import (
+    MonthYearForm,
     DayForm,
     ChooseStaffForm,
 )
@@ -87,10 +89,12 @@ class TableCreateView(View):
         staff = User.objects.filter(profile__in=staff_profile)
         staff_init = get_init_data_choose_staf(staff, is_choosen=True)
         choose_staff_formset = self.ChooseStaffFormset(initial=staff_init)
+        month_year_form = MonthYearForm()
         context = {
             "unit_organization": unit_organization,
             "staff": staff,
             "choose_staff_formset": choose_staff_formset,
+            "month_year_form": month_year_form,
         }
         return render(
             request,
@@ -106,10 +110,32 @@ class TableCreateView(View):
                 status=400,
             )
 
+        month_year_form = MonthYearForm(request.POST)
+        if not month_year_form.is_valid():
+            return HttpResponseBadRequest(
+                content="Данные месяца и года не прошли валидацию",
+                status=400,
+            )
+
+        first_day_month = datetime.date(
+            year=month_year_form.cleaned_data["num_year"],
+            month=month_year_form.cleaned_data["num_month"],
+            day=1,
+        )
+        if Table.objects.filter(first_day=first_day_month).exists():
+            return HttpResponseBadRequest(
+                content="Уже существует таблица для этого месяца",
+                status=400,
+            )
+
         unit_organization = get_object_or_404(
             UnitOrganization, slug=self.kwargs["unit_organization"]
         )
-        table = Table.objects.create(unit_organization=unit_organization)
+        table = Table.objects.create(
+            unit_organization=unit_organization,
+            year=month_year_form.cleaned_data["num_year"],
+            month=month_year_form.cleaned_data["num_month"],
+        )
         for one_of_staff in parsed_staff.values():
             staff = get_object_or_404(User, pk=one_of_staff["pk_staff"])
             Row.objects.create(table=table, staff=staff)
