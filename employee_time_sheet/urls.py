@@ -5,7 +5,6 @@ from employee_time_sheet.views import (
     TablesList,
     TableCreateView,
     choose_staff,
-    table_ucheta_rabochego_vremeni_create,
     detail_formset,
 )
 
@@ -40,10 +39,5 @@ urlpatterns = [
         "detail_formset/<int:pk>/",
         detail_formset,
         name="detail_formset",
-    ),
-    path(
-        "<slug:unit_organization>/tables_ucheta_rabochego_vremeni_create/",
-        table_ucheta_rabochego_vremeni_create,
-        name="table_ucheta_rabochego_vremeni_create",
     ),
 ]

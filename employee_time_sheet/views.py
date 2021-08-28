@@ -1,7 +1,7 @@
 from typing import List, Dict, Tuple
 from django.contrib.auth import get_user_model
 from django.forms.formsets import BaseFormSet
-from django.forms.models import inlineformset_factory, modelformset_factory
+from django.forms.models import modelformset_factory
 from django.forms import formset_factory
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -11,8 +11,6 @@ from django.http import HttpResponseBadRequest
 from django.views.generic.base import View
 
 from employee_time_sheet.forms import (
-    RowForm,
-    TabbleForm,
     DayForm,
     ChooseStaffForm,
 )
@@ -141,33 +139,6 @@ class IndexListView(ListView):
             return []
         profile = self.request.user.profile
         return profile.units_organizations.all()
-
-
-def table_ucheta_rabochego_vremeni_create(request):
-    FullTable = inlineformset_factory(
-        Table,
-        Row,
-        fields=("staff",),
-    )
-    if request.method == "POST":
-        table_form = TabbleForm(request.POST)
-        row_form = RowForm(request.POST)
-        full_table = FullTable(request.POST)
-    else:
-        table_form = TabbleForm()
-        row_form = RowForm()
-        full_table = FullTable()
-    context = {
-        "table_form": table_form,
-        "row_form": row_form,
-        "full_table": full_table,
-    }
-
-    return render(
-        request,
-        "employee_time_sheet/tables_ucheta_rabochego_vremeni_create.html",
-        context=context,
-    )
 
 
 def parse_form_time_sheet(post_days) -> list:
