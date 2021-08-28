@@ -4,8 +4,8 @@ from employee_time_sheet.views import (
     IndexListView,
     TablesList,
     TableCreateView,
+    TableEditView,
     choose_staff,
-    detail_formset,
 )
 
 app_name = "employee_time_sheet"
@@ -37,7 +37,7 @@ urlpatterns = [
     ),
     path(
         "detail_formset/<int:pk>/",
-        detail_formset,
+        TableEditView.as_view(),
         name="detail_formset",
     ),
 ]

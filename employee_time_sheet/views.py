@@ -170,16 +170,9 @@ def prepare_update_days_from_parse_form(days_ids_statuses) -> List[Day]:
     return days
 
 
-def detail_formset(request, pk: int):
-    if request.method == "POST":
-        days_ids_statuses = parse_form_time_sheet(request.POST)
-        days = prepare_update_days_from_parse_form(days_ids_statuses)
-        Day.objects.bulk_update(days, ["status"])
-        return HttpResponseRedirect(
-            reverse("employee_time_sheet:detail", kwargs={"pk": pk})
-        )
-    else:
-        table = get_object_or_404(Table, pk=pk)
+class TableEditView(View):
+    def get(self, request, *args, **kwargs):
+        table = get_object_or_404(Table, pk=self.kwargs["pk"])
         rows = table.rows.all()
         rows_names_and_days_formsets: List[Dict[str, BaseFormSet]] = []
         DayFormset = modelformset_factory(model=Day, form=DayForm, extra=0)
@@ -203,6 +196,16 @@ def detail_formset(request, pk: int):
             "employee_time_sheet/"
             "table_ucheta_rabochego_vremeni_detail formset.html",
             context=context,
+        )
+
+    def post(self, request, *args, **kwargs):
+        days_ids_statuses = parse_form_time_sheet(request.POST)
+        days = prepare_update_days_from_parse_form(days_ids_statuses)
+        Day.objects.bulk_update(days, ["status"])
+        return HttpResponseRedirect(
+            reverse(
+                "employee_time_sheet:detail", kwargs={"pk": self.kwargs["pk"]}
+            )
         )
 
 
