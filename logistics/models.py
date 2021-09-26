@@ -93,6 +93,7 @@ class Product(models.Model):
 class Role(models.TextChoices):
     STAFF = "STAFF", _("Staff")
     HEAD_OF_PHARMACY = "head_of_pharmacy", _("Head_of_pharmacy")
+    DIRECTOR = "director", ("Director")
     ADMIN = "admin", _("Admin")
 
 
