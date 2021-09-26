@@ -5,6 +5,7 @@ from employee_time_sheet.views import (
     TablesList,
     TableCreateView,
     TableEditView,
+    GetODFTable,
     choose_staff,
 )
 
@@ -29,6 +30,11 @@ urlpatterns = [
         "detail/<int:pk>/",
         TableDetailView.as_view(),
         name="detail",
+    ),
+    path(
+        "detail/<int:pk>/odf-table/",
+        GetODFTable.as_view(),
+        name="get-odf-table",
     ),
     path(
         "detail/<int:pk>/choose_staff",

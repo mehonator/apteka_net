@@ -1,30 +1,33 @@
+from apteka_net.employee_time_sheet.serveses import (
+    get_data_for_file_time_table,
+)
+import csv
 import datetime
-from typing import List, Dict, Tuple
+from io import BytesIO
+from typing import Dict, List, Tuple
+
+import pyexcel as pe
 from django.contrib.auth import get_user_model
+from django.forms import formset_factory
 from django.forms.formsets import BaseFormSet
 from django.forms.models import modelformset_factory
-from django.forms import formset_factory
+from django.http import FileResponse, HttpResponseBadRequest
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-from django.views.generic import DetailView, ListView
+from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.urls import reverse
-from django.http import HttpResponseBadRequest
+from django.views.generic import DetailView, ListView
 from django.views.generic.base import View
-
-from employee_time_sheet.forms import (
-    MonthYearForm,
-    DayForm,
-    ChooseStaffForm,
-)
-from employee_time_sheet.models import Day, Row, Table
 from logistics.models import Profile, UnitOrganization
 
+from employee_time_sheet.forms import ChooseStaffForm, DayForm, MonthYearForm
+from employee_time_sheet.models import Day, Row
+from employee_time_sheet.models import Table as TimeTable
 
 User = get_user_model()
 
 
 class TablesList(ListView):
-    model = Table
+    model = TimeTable
     context_object_name = "tables"
     template_name = "employee_time_sheet/tables_list.html"
 
@@ -122,7 +125,7 @@ class TableCreateView(View):
             month=month_year_form.cleaned_data["num_month"],
             day=1,
         )
-        if Table.objects.filter(first_day=first_day_month).exists():
+        if TimeTable.objects.filter(first_day=first_day_month).exists():
             return HttpResponseBadRequest(
                 content="Уже существует таблица для этого месяца",
                 status=400,
@@ -131,7 +134,7 @@ class TableCreateView(View):
         unit_organization = get_object_or_404(
             UnitOrganization, slug=self.kwargs["unit_organization"]
         )
-        table = Table.objects.create(
+        table = TimeTable.objects.create(
             unit_organization=unit_organization,
             year=month_year_form.cleaned_data["num_year"],
             month=month_year_form.cleaned_data["num_month"],
@@ -144,7 +147,7 @@ class TableCreateView(View):
 
 
 class TableDetailView(DetailView):
-    model = Table
+    model = TimeTable
     context_object_name = "table"
     template_name = (
         "employee_time_sheet/table_ucheta_rabochego_vremeni_detail.html"
@@ -154,6 +157,61 @@ class TableDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["rows"] = self.object.rows.all()
         return context
+
+
+def generate_csv_time_sheet(table: TimeTable):
+    name_unit = table.unit_organization.name
+    year = table.year
+    month = table.month
+
+    name_table_file = f"{name_unit}{year}{month}.csv"
+    rows = get_list_or_404(Row, table=table)
+    users_days: List[Dict] = []
+    for row in rows:
+        username = row.staff.get_full_name()
+        days = list(get_list_or_404(Day, row=row))
+        days_status = [day.get_status_display() for day in days]
+        users_days.append(
+            {
+                "username": username,
+                "days_status": days_status,
+            }
+        )
+
+    with open(name_table_file, "w", newline="") as csvfile:
+        temp_csv_writer = csv.writer(
+            csvfile, delimiter=" ", quotechar="|", quoting=csv.QUOTE_MINIMAL
+        )
+        for user_day in users_days:
+            temp_csv_writer.writerow(
+                [user_day["username"]] + [user_day["days_status"]]
+            )
+
+    return name_table_file
+
+
+class GetODFTable(View):
+    def get(self, request, *args, **kwargs):
+        table = get_object_or_404(TimeTable, pk=kwargs["pk"])
+        name_unit = table.unit_organization.name
+        year = table.year
+        month = table.month
+        users_days_status = get_data_for_file_time_table(table)
+        prepared_data = []
+        for user_day in users_days_status:
+            prepared_data.append(
+                [user_day["username"], *user_day["days_status"]]
+            )
+        io = BytesIO()
+        sheet = pe.Sheet(prepared_data)
+        io = sheet.save_to_memory("ods", io)
+        response = FileResponse(
+            io,
+            content_type="text/ods",
+            filename=f"{name_unit} {year} {month}.ods",
+        )
+
+        return response
 
 
 class IndexListView(ListView):
@@ -198,7 +256,7 @@ def prepare_update_days_from_parse_form(days_ids_statuses) -> List[Day]:
 
 class TableEditView(View):
     def get(self, request, *args, **kwargs):
-        table = get_object_or_404(Table, pk=self.kwargs["pk"])
+        table = get_object_or_404(TimeTable, pk=self.kwargs["pk"])
         rows = table.rows.all()
         rows_names_and_days_formsets: List[Dict[str, BaseFormSet]] = []
         DayFormset = modelformset_factory(model=Day, form=DayForm, extra=0)
@@ -259,7 +317,7 @@ def del_rows(users, table):
 def choose_staff(request, pk: int):
     ChooseStaffFormset = formset_factory(ChooseStaffForm, extra=0)
     if request.method == "GET":
-        table = get_object_or_404(Table, pk=pk)
+        table = get_object_or_404(TimeTable, pk=pk)
 
         selected_staff = User.objects.filter(
             row_table_ucheta_rabochego_vremeni__in=table.rows.all()
@@ -285,7 +343,7 @@ def choose_staff(request, pk: int):
     elif request.method == "POST":
         input_choose_staff_formset = ChooseStaffFormset(request.POST)
         if input_choose_staff_formset.is_valid():
-            table = get_object_or_404(Table, pk=pk)
+            table = get_object_or_404(TimeTable, pk=pk)
             chosens, unchosens = get_chosen_and_unchosen(
                 input_choose_staff_formset.cleaned_data
             )
