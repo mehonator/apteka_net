@@ -89,9 +89,6 @@ class Day(models.Model):
         null=True,
     )
 
-    def get_rus_status(self):
-        return self.status[1]
-
     def __str__(self):
         return f"{self.day} {self.status} {self.row}"
 
