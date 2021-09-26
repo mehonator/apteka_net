@@ -74,9 +74,11 @@ class Row(models.Model):
 
 
 class Status(models.TextChoices):
-    CAME_TO_WORK = "came_to_work", _("Явился")
-    NO_CAME_TO_WORK = "no_came_to_work", _("Не явился")
-    NOT_INFO = "not_info", _("Нет информации")
+    CAME_TO_WORK = "came_to_work", _("+")
+    DAY_OFF = "day_off", _("В")
+    SICK_DAY = "sick_day", _("Б")
+    NO_CAME_TO_WORK = "no_came_to_work", _("-")
+    NOT_INFO = "not_info", _("?")
 
 
 class Day(models.Model):
